@@ -1,0 +1,8 @@
+# Virtual Environment
+chatbot_env/
+
+# Environment Variables
+.env
+
+# Python Cache
+__pycache__/
