@@ -1,15 +1,7 @@
 # import the required libraries.
 import streamlit as st
 
-from chatbot_backend import chatbot
-from langchain_core.messages import HumanMessage
-
-# set the configuration variable.
-CONFIG = {
-    'configurable' : {
-        'thread_id' : 'chat-1'
-    }
-}
+from streaming import stream_chat
 
 # add the title on the top of the chat
 st.markdown(
@@ -50,18 +42,28 @@ if user_input:
     with st.chat_message('user'):
         st.text(user_input)
 
+    # `NOTE : This Given below code is not provide the streaming of data.`
+    # # called the llm for the query.
+    # response = chatbot.invoke({
+    #     'messages' : HumanMessage(content = user_input)
+    # }, config = CONFIG)
 
-    # called the llm for the query.
-    response = chatbot.invoke({
-        'messages' : HumanMessage(content = user_input)
-    }, config = CONFIG)
+    # # extract the ai_message from the response comes from LLM.
+    # ai_message = response['messages'][-1].content
 
-    # extract the ai_message from the response comes from LLM.
-    ai_message = response['messages'][-1].content
-
-    # append the current input into a history.
-    st.session_state['message_history'].append({'role' : 'assistant', 'content' : ai_message})
+    # # append the current input into a history.
+    # st.session_state['message_history'].append({'role' : 'assistant', 'content' : ai_message})
     
-    # print the current message to UI.
+    # # print the current message to UI.
+    # with st.chat_message('assistant'):
+    #     st.text(ai_message)
+
+
+    # looping ths stream object(generator) to get out the data
+    # display the stream data using write_stream
     with st.chat_message('assistant'):
-        st.text(ai_message)
+        ai_message = st.write_stream(
+            stream_chat(user_input)
+        )
+
+    st.session_state['message_history'].append({'role' : 'assistant', 'content' : ai_message})
