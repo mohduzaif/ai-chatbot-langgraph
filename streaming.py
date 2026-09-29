@@ -1,15 +1,16 @@
 from langchain_core.messages import HumanMessage
 from chatbot_backend import chatbot
 
-# set the configuration variable.
-CONFIG = {
-    'configurable' : {
-        'thread_id' : 'chat-1'
+def stream_chat(user_input, thread_id):
+
+    # =========================
+    #    SET CONFIGURATION VARIABLE.
+    # ========================= 
+    CONFIG = {
+        'configurable' : {
+            'thread_id' : thread_id
+        }
     }
-}
-
-def stream_chat(user_input):
-
     stream_data_object = chatbot.stream(
         {
             "messages": HumanMessage(content=user_input)
