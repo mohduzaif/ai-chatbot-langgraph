@@ -6,7 +6,8 @@ from typing import TypedDict, Annotated
 from dotenv import load_dotenv
 from langchain_core.messages import BaseMessage, HumanMessage
 from langgraph.graph.message import add_messages
-from langgraph.checkpoint.memory import InMemorySaver 
+from langgraph.checkpoint.sqlite import SqliteSaver 
+from database.sqlite_db import get_database_connection_obj
 
 # load the environment variables.
 load_dotenv()
@@ -38,8 +39,11 @@ def chat_node(state : ChatState):
         'messages' : [response]
     }
 
+# get the db connection object.
+conn = get_database_connection_obj() 
+
 # define the checkpointer object.
-checkPointer = InMemorySaver()
+checkPointer = SqliteSaver(conn = conn)
 
 
 # define the graph.

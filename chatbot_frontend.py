@@ -9,6 +9,8 @@ from ui_sidebar.sidebar import render_sidebar
 from utils.thread import create_thread_id
 from utils.add_thread import add_thread_id
 
+from database.get_unique_thread_ids import get_all_unique_threads
+
 # =========================
 #    SESSION SETUP SECTION
 # ========================= 
@@ -23,7 +25,7 @@ if 'thread_id' not in st.session_state:
 
 # store the thread ids of the newly created chats.
 if 'chat_threads' not in st.session_state:
-    st.session_state['chat_threads'] = []
+    st.session_state['chat_threads'] = get_all_unique_threads()
 
 # add current thread_id.
 add_thread_id(st.session_state['thread_id'])
