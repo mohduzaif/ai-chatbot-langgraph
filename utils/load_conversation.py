@@ -8,4 +8,9 @@ def load_current_thread_conversation(thread_id):
                 'thread_id' : thread_id
             }
         }
-    return chatbot.get_state(config = CONFIG).values['messages']
+        
+    # return chatbot.get_state(config = CONFIG).values['messages']
+
+    state = chatbot.get_state(config=CONFIG)
+    
+    return state.values.get('messages', [])
