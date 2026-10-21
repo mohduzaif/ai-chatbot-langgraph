@@ -6,3 +6,7 @@ chatbot_env/
 
 # Python Cache
 __pycache__/
+
+# database files.
+database/chatbot.db-shm
+database/chatbot.db-wal
