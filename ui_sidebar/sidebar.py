@@ -1,6 +1,6 @@
 import streamlit as st
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 
 from utils.reset_chat import reset_ui
 from utils.load_conversation import load_current_thread_conversation
@@ -59,20 +59,56 @@ def render_sidebar(thread_id):
                 # load the chat of the current thread.
                 messages = load_current_thread_conversation(chat_thread_id)
 
-                # convert the chat_format in competable format.
+                # # convert the chat_format in competable format.
+                # temp_messages = []
+
+                # for msg in messages:
+                #     if isinstance(msg, HumanMessage):
+                #         role = 'user'
+                #     else:
+                #         role = 'assistant'
+
+                #     temp_messages.append({
+                #         'role' : role, 
+                #         'content' : msg.content
+                #     })
+
+
+                # st.session_state['message_history'] = temp_messages
+                # st.rerun()
+
                 temp_messages = []
 
                 for msg in messages:
+
+                    # Display user messages
                     if isinstance(msg, HumanMessage):
-                        role = 'user'
-                    else:
-                        role = 'assistant'
+                        content = msg.content
 
-                    temp_messages.append({
-                        'role' : role, 
-                        'content' : msg.content
-                    })
+                        if isinstance(content, str) and content.strip():
+                            temp_messages.append({
+                                "role": "user",
+                                "content": content
+                            })
 
+                    # Ignore raw Tavily search results
+                    elif isinstance(msg, ToolMessage):
+                        continue
 
-                st.session_state['message_history'] = temp_messages
+                    # Display final assistant responses only
+                    elif isinstance(msg, AIMessage):
+
+                        # Ignore intermediate messages requesting tool execution
+                        if msg.tool_calls:
+                            continue
+
+                        content = msg.content
+
+                        if isinstance(content, str) and content.strip():
+                            temp_messages.append({
+                                "role": "assistant",
+                                "content": content
+                            })
+
+                st.session_state["message_history"] = temp_messages
                 st.rerun()
