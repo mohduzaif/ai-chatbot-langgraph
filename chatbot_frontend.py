@@ -31,10 +31,14 @@ if 'chat_threads' not in st.session_state:
 add_thread_id(st.session_state['thread_id'])
 
 
-# load the previous converstion from the history.
+# Display previous messages with proper Markdown formatting.
 for message in st.session_state['message_history']:
     with st.chat_message(message['role']):
-        st.text(message['content'])
+        if message['role'] == 'assistant':
+            st.markdown(message['content'])
+        else:
+            st.markdown(message['content'])
+
 
 
 # =========================
